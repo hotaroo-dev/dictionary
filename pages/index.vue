@@ -146,6 +146,7 @@
                   v-for="(url, idx) in searchedResult.sourceUrls"
                   :key="idx"
                   :href="url"
+                  target="_blank"
                   class="flex items-center gap-3 text-zinc-800 underline underline-offset-2 dark:text-zinc-200"
                 >
                   <span>{{ url }}</span>
