@@ -1,9 +1,5 @@
 export default function useTheme() {
-  const isDark = useState<boolean | null>('theme', () => null)
-
-  onMounted(() => {
-    isDark.value = localStorage.getItem('theme') === 'dark'
-  })
+  const isDark = useState<boolean>('theme', () => false)
 
   watch(isDark, () => {
     localStorage.setItem('theme', isDark.value ? 'dark' : 'light')

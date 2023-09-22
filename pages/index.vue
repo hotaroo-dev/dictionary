@@ -84,12 +84,19 @@
                   {{ searchedResult.phonetic }}
                 </p>
               </div>
-              <button
-                class="bg-primary-200 dark:bg-primary-900 flex h-12 w-12 items-center justify-center rounded-full duration-300 active:translate-y-[2px]"
-                @click="playAudio(searchedResult.audio)"
-              >
-                <IconsPlay class="text-primary dark:text-primary-400 text-lg" />
-              </button>
+              <div>
+                <button
+                  class="bg-primary-200 dark:bg-primary-900 flex h-12 w-12 items-center justify-center rounded-full duration-300 active:translate-y-[2px]"
+                  @click="playAudio"
+                >
+                  <IconsPlay
+                    class="text-primary dark:text-primary-400 text-lg"
+                  />
+                </button>
+                <audio ref="audioRef">
+                  <source :src="searchedResult.audio" type="audio/mpeg" />
+                </audio>
+              </div>
             </div>
 
             <div
@@ -179,6 +186,7 @@ useHead({
 const font = ref('Serif')
 const inputText = ref('')
 const inputRef = ref()
+const audioRef = ref()
 const searchedResult = ref<IWord | null>(null)
 const searching = ref(false)
 const isOpenDropDown = ref(false)
@@ -204,9 +212,8 @@ const changeFont = (event: Event) => {
   toggleDropDown()
 }
 
-const playAudio = (url: string) => {
-  const audio = new Audio(url)
-  audio.play()
+const playAudio = () => {
+  audioRef.value.play()
 }
 
 const handleSubmit = async (event: Event) => {
