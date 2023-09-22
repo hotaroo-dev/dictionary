@@ -58,8 +58,8 @@
     <main class="space-y-6 py-4">
       <form class="relative flex" @submit="handleSubmit">
         <input
-          v-model="inputText"
           ref="inputRef"
+          v-model="inputText"
           placeholder="keyboard"
           class="w-full rounded-2xl bg-zinc-100 px-6 py-4 font-semibold transition-[background-color] duration-300 focus-within:outline-none dark:bg-zinc-800"
           type="text"
@@ -88,7 +88,7 @@
                 class="bg-primary-200 dark:bg-primary-900 flex h-12 w-12 items-center justify-center rounded-full duration-300 active:translate-y-[2px]"
                 @click="playAudio(searchedResult.audio)"
               >
-                <IconsPlay class="text-primary dark:text-primary-500 text-lg" />
+                <IconsPlay class="text-primary dark:text-primary-400 text-lg" />
               </button>
             </div>
 
@@ -111,7 +111,7 @@
                     class="flex gap-6"
                   >
                     <div
-                      class="bg-primary mt-3 h-[6px] w-[6px] flex-shrink-0 rounded-full"
+                      class="bg-primary dark:bg-primary-500 mt-3 h-[6px] w-[6px] flex-shrink-0 rounded-full"
                     ></div>
                     <div class="grid gap-4">
                       <p>{{ definition.definition }}</p>
@@ -126,7 +126,9 @@
               <template v-if="meaning.synonyms.length > 0">
                 <div class="flex gap-8 text-lg">
                   <p class="text-zinc-500">Synonyms</p>
-                  <p class="text-primary flex flex-wrap gap-x-2 font-semibold">
+                  <p
+                    class="text-primary dark:text-primary-500 flex flex-wrap gap-x-2 font-semibold"
+                  >
                     <span v-for="synonyms in meaning.synonyms" :key="synonyms">
                       {{ synonyms }}
                     </span>
