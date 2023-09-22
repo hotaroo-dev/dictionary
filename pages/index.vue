@@ -157,6 +157,8 @@
 </template>
 
 <script setup lang="ts">
+import { IWord } from '#imports'
+
 useHead({
   script: [
     {
