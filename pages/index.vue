@@ -22,17 +22,17 @@
           >
             <ul @click="changeFont">
               <li
-                class="cursor-pointer border-b border-black pb-2 duration-300 dark:border-zinc-400"
+                class="cursor-pointer border-b border-black pb-2 dark:border-zinc-400"
               >
                 Serif
               </li>
               <li
-                class="cursor-pointer border-b border-black py-2 duration-300 dark:border-zinc-400"
+                class="cursor-pointer border-b border-black py-2 dark:border-zinc-400"
               >
                 Sans serif
               </li>
               <li
-                class="mb-1 cursor-pointer border-b border-black py-2 duration-300 dark:border-zinc-400"
+                class="mb-1 cursor-pointer border-b border-black py-2 dark:border-zinc-400"
               >
                 Monospace
               </li>
@@ -59,6 +59,8 @@
       <form class="relative flex" @submit="handleSubmit">
         <input
           v-model="inputText"
+          ref="inputRef"
+          placeholder="keyboard"
           class="w-full rounded-2xl bg-zinc-100 px-6 py-4 font-semibold transition-[background-color] duration-300 focus-within:outline-none dark:bg-zinc-800"
           type="text"
         />
@@ -170,13 +172,19 @@ useHead({
     }
   ]
 })
+
 const font = ref('Serif')
 const inputText = ref('')
+const inputRef = ref()
 const searchedResult = ref<IWord | null>(null)
 const searching = ref(false)
 const isOpenDropDown = ref(false)
 
 const { isDark } = useTheme()
+
+onMounted(() => {
+  inputRef.value.focus()
+})
 
 const toggleDropDown = () => {
   isOpenDropDown.value = !isOpenDropDown.value
