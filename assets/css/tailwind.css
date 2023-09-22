@@ -9,5 +9,5 @@ body {
 
 html,
 body {
-  @apply text-zinc-900 duration-300 dark:bg-zinc-900 dark:text-zinc-100;
+  @apply min-h-screen text-zinc-900 duration-300 dark:bg-zinc-900 dark:text-zinc-100;
 }
