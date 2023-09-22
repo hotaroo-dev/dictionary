@@ -6,3 +6,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+html,
+body {
+  @apply text-zinc-900 duration-300 dark:bg-zinc-900 dark:text-zinc-100;
+}
