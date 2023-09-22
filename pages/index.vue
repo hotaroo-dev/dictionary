@@ -134,7 +134,7 @@
                 <div class="flex gap-8 text-lg">
                   <p class="text-zinc-500">Synonyms</p>
                   <p
-                    class="text-primary dark:text-primary-500 flex flex-wrap gap-x-2 font-semibold"
+                    class="text-primary dark:text-primary-500 flex flex-wrap gap-x-4 font-semibold"
                   >
                     <span v-for="synonyms in meaning.synonyms" :key="synonyms">
                       {{ synonyms }}
