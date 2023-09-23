@@ -61,7 +61,7 @@
           ref="inputRef"
           v-model="inputText"
           placeholder="keyboard"
-          class="w-full rounded-2xl bg-zinc-100 px-6 py-4 font-semibold transition-[background-color] duration-300 focus-within:outline-none dark:bg-zinc-800"
+          class="w-full rounded-2xl bg-zinc-100 px-6 py-4 font-semibold focus-within:outline-none dark:bg-zinc-800"
           type="text"
         />
         <button class="absolute right-6 top-1/2 -translate-y-1/2 text-xl">
@@ -111,7 +111,7 @@
 
               <div class="space-y-3 text-lg">
                 <p class="text-zinc-500">Meaning</p>
-                <ul class="space-y-4 text-zinc-800 dark:text-zinc-200">
+                <ul class="space-y-2 text-zinc-800 dark:text-zinc-200">
                   <li
                     v-for="(definition, idx) in meaning.definitions"
                     :key="idx"
@@ -120,7 +120,7 @@
                     <div
                       class="bg-primary dark:bg-primary-500 mt-3 h-[6px] w-[6px] flex-shrink-0 rounded-full"
                     ></div>
-                    <div class="grid gap-4">
+                    <div class="grid gap-2">
                       <p>{{ definition.definition }}</p>
                       <p v-if="definition.example" class="text-zinc-500">
                         &ldquo;{{ definition.example }}&rdquo;
@@ -169,8 +169,6 @@
 </template>
 
 <script setup lang="ts">
-import { IWord } from '#imports'
-
 useHead({
   script: [
     {
@@ -183,15 +181,31 @@ useHead({
   ]
 })
 
+interface IWord {
+  word: string
+  phonetic: string
+  audio: string
+  meanings: {
+    definitions: {
+      definition: string
+      example: string
+    }[]
+    partOfSpeech: string
+    synonyms: string[]
+    example?: string
+  }[]
+  sourceUrls: string[]
+}
+
+const { word } = await getWord('keyboard')
+const { isDark } = useTheme()
 const font = ref('Serif')
 const inputText = ref('')
 const inputRef = ref()
 const audioRef = ref()
-const searchedResult = ref<IWord | null>(null)
+const searchedResult = ref<IWord | null>(word.value)
 const searching = ref(false)
 const isOpenDropDown = ref(false)
-
-const { isDark } = useTheme()
 
 onMounted(() => {
   inputRef.value.focus()
@@ -223,28 +237,10 @@ const handleSubmit = async (event: Event) => {
     alert('Please Enter a word!!!')
     return
   }
-
   searching.value = true
-  const { data: word, pending } = await useAsyncData(
-    'word',
-    () =>
-      $fetch(
-        `https://api.dictionaryapi.dev/api/v2/entries/en/${inputText.value}`
-      ),
-    {
-      transform: (word: any) => {
-        return {
-          word: word[0].word,
-          phonetic: word[0].phonetics[0].text,
-          audio: word[0].phonetics
-            .map((phonetic: any) => phonetic.audio)
-            .find((audio: string) => audio),
-          meanings: word[0].meanings,
-          sourceUrls: word[0].sourceUrls
-        }
-      }
-    }
-  )
+
+  const { word, pending } = await getWord(inputText.value)
+
   searching.value = pending.value
   searchedResult.value = word.value
 }
