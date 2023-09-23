@@ -102,7 +102,7 @@
             <div
               v-for="meaning in searchedResult.meanings"
               :key="meaning.partOfSpeech"
-              class="my-6 space-y-6"
+              class="my-6 space-y-6 pb-2"
             >
               <div class="flex items-center gap-6">
                 <p class="text-xl font-semibold">{{ meaning.partOfSpeech }}</p>
@@ -131,7 +131,7 @@
               </div>
 
               <template v-if="meaning.synonyms.length > 0">
-                <div class="flex gap-8 text-lg">
+                <div class="flex gap-8 pt-4 text-lg">
                   <p class="text-zinc-500">Synonyms</p>
                   <p
                     class="text-primary dark:text-primary-500 flex flex-wrap gap-x-4 font-semibold"
