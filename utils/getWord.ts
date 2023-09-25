@@ -1,9 +1,28 @@
-export default async function getWord(text: string) {
-  const { data: word, pending } = await useAsyncData(
-    'word',
-    () => $fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${text}`),
+interface IWord {
+  word: string
+  phonetic: string
+  audio: string
+  meanings: {
+    definitions: {
+      definition: string
+      example: string
+    }[]
+    partOfSpeech: string
+    synonyms: string[]
+    example?: string
+  }[]
+  sourceUrls: string[]
+}
+
+export default async function getWord(text: Ref<string>) {
+  const {
+    data: word,
+    pending,
+    error
+  } = await useFetch(
+    () => `https://api.dictionaryapi.dev/api/v2/entries/en/${text.value}`,
     {
-      transform: (word: any) => {
+      transform: (word: any): IWord => {
         return {
           word: word[0].word,
           phonetic: word[0].phonetics[0].text,
@@ -17,5 +36,5 @@ export default async function getWord(text: string) {
     }
   )
 
-  return { word, pending }
+  return { word, pending, error }
 }

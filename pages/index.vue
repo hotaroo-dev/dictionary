@@ -12,7 +12,7 @@
             {{ font }}
           </p>
           <IconsChevronDown
-            class="text-primary dark:text-primary-500 text-xl duration-300"
+            class="text-xl text-primary duration-300 dark:text-primary-500"
           />
         </button>
         <Transition name="slide-fade">
@@ -43,7 +43,7 @@
       <div class="ml-4 flex items-center gap-4">
         <div class="relative h-6 w-12">
           <label
-            class="dark:bg-primary absolute h-full w-full cursor-pointer rounded-full bg-zinc-500 px-1"
+            class="absolute h-full w-full cursor-pointer rounded-full bg-zinc-500 px-1 dark:bg-primary"
           >
             <input v-model="isDark" class="peer hidden" type="checkbox" />
             <span
@@ -51,12 +51,12 @@
             ></span>
           </label>
         </div>
-        <IconsMoon class="dark:text-primary-500 text-3xl text-zinc-500" />
+        <IconsMoon class="text-3xl text-zinc-500 dark:text-primary-500" />
       </div>
     </header>
 
     <main class="space-y-6 py-4">
-      <form class="relative flex" @submit="handleSubmit">
+      <form class="relative flex" @submit="onSubmit">
         <input
           ref="inputRef"
           v-model="inputText"
@@ -70,37 +70,40 @@
       </form>
 
       <Transition name="fade" mode="out-in">
-        <div v-if="searching" class="flex justify-center pt-10">
+        <div v-if="pending" class="flex justify-center pt-10">
           <IconsSpinner />
         </div>
+        <div v-else-if="error" class="flex">
+          <p class="text-red-500">Could not find word: {{ text }}</p>
+        </div>
         <div v-else>
-          <template v-if="searchedResult">
+          <template v-if="word">
             <div class="flex items-center">
               <div class="flex-1 space-y-[6px]">
                 <h1 class="text-3xl font-semibold">
-                  {{ searchedResult.word }}
+                  {{ word.word }}
                 </h1>
-                <p class="text-primary dark:text-primary-500 text-xl">
-                  {{ searchedResult.phonetic }}
+                <p class="text-xl text-primary dark:text-primary-500">
+                  {{ word.phonetic }}
                 </p>
               </div>
               <div>
                 <button
-                  class="bg-primary-200 dark:bg-primary-900 flex h-12 w-12 items-center justify-center rounded-full duration-300 active:translate-y-[2px]"
+                  class="flex h-12 w-12 items-center justify-center rounded-full bg-primary-200 duration-300 active:translate-y-[2px] dark:bg-primary-900"
                   @click="playAudio"
                 >
                   <IconsPlay
-                    class="text-primary dark:text-primary-400 text-lg"
+                    class="text-lg text-primary dark:text-primary-400"
                   />
                 </button>
                 <audio ref="audioRef">
-                  <source :src="searchedResult.audio" type="audio/mpeg" />
+                  <source :src="word.audio" type="audio/mpeg" />
                 </audio>
               </div>
             </div>
 
             <div
-              v-for="meaning in searchedResult.meanings"
+              v-for="meaning in word.meanings"
               :key="meaning.partOfSpeech"
               class="my-6 space-y-6 pb-2"
             >
@@ -118,7 +121,7 @@
                     class="flex gap-6"
                   >
                     <div
-                      class="bg-primary dark:bg-primary-500 mt-3 h-[6px] w-[6px] flex-shrink-0 rounded-full"
+                      class="mt-3 h-[6px] w-[6px] flex-shrink-0 rounded-full bg-primary dark:bg-primary-500"
                     ></div>
                     <div class="grid gap-2">
                       <p>{{ definition.definition }}</p>
@@ -134,7 +137,7 @@
                 <div class="flex gap-8 pt-4 text-lg">
                   <p class="text-zinc-500">Synonyms</p>
                   <p
-                    class="text-primary dark:text-primary-500 flex flex-wrap gap-x-4 font-semibold"
+                    class="flex flex-wrap gap-x-4 font-semibold text-primary dark:text-primary-500"
                   >
                     <span v-for="synonyms in meaning.synonyms" :key="synonyms">
                       {{ synonyms }}
@@ -150,7 +153,7 @@
               <p class="mb-2 text-zinc-500">Source</p>
               <div class="space-y-2">
                 <a
-                  v-for="(url, idx) in searchedResult.sourceUrls"
+                  v-for="(url, idx) in word.sourceUrls"
                   :key="idx"
                   :href="url"
                   target="_blank"
@@ -181,31 +184,15 @@ useHead({
   ]
 })
 
-interface IWord {
-  word: string
-  phonetic: string
-  audio: string
-  meanings: {
-    definitions: {
-      definition: string
-      example: string
-    }[]
-    partOfSpeech: string
-    synonyms: string[]
-    example?: string
-  }[]
-  sourceUrls: string[]
-}
-
-const { word } = await getWord('keyboard')
 const { isDark } = useTheme()
 const font = ref('Serif')
+const text = ref('keyboard')
 const inputText = ref('')
 const inputRef = ref()
 const audioRef = ref()
-const searchedResult = ref<IWord | null>(word.value)
-const searching = ref(false)
 const isOpenDropDown = ref(false)
+
+const { word, pending, error } = await getWord(text)
 
 onMounted(() => {
   inputRef.value.focus()
@@ -230,19 +217,15 @@ const playAudio = () => {
   audioRef.value.play()
 }
 
-const handleSubmit = async (event: Event) => {
-  event.preventDefault()
-
-  if (inputText.value === '') {
-    alert('Please Enter a word!!!')
+const onSubmit = (e: Event) => {
+  e.preventDefault()
+  if (!inputText.value) {
+    alert('No input text!!!')
     return
   }
-  searching.value = true
 
-  const { word, pending } = await getWord(inputText.value)
-
-  searching.value = pending.value
-  searchedResult.value = word.value
+  text.value = inputText.value
+  inputText.value = ''
 }
 </script>
 
