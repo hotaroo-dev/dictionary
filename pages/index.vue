@@ -152,16 +152,17 @@
             >
               <p class="mb-2 text-zinc-500">Source</p>
               <div class="space-y-2">
-                <a
+                <NuxtLink
                   v-for="(url, idx) in word.sourceUrls"
                   :key="idx"
-                  :href="url"
+                  :to="url"
+                  external
                   target="_blank"
                   class="flex items-center gap-3 text-zinc-800 underline underline-offset-2 dark:text-zinc-200"
                 >
                   <span>{{ url }}</span>
                   <IconsLink />
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </template>
